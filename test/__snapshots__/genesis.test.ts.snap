@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Genesis matches the GENESIS snapshot 1`] = `
+{
+  "data": "Gen-data",
+  "hash": "Gen-hash",
+  "lastHash": "Gen-lastHash",
+}
+`;
