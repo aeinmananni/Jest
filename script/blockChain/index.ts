@@ -14,19 +14,26 @@ export const BlockChaine = <T>() => {
       const hash = CryptohashFunction(v.data, lastHash);
       chain = [...chain, block({ lastHash, hash, data: dataHash })];
     },
+
     isValidChain(chain: BlockType<string>[]) {
-      if (chain[0] !== GENESIS) return "is Not Instance fo GENESIS Block!";
+      if (JSON.stringify(chain[0]) !== JSON.stringify(GENESIS)) return false;
       for (let i = 1; i < chain.length; i++) {
         const block = chain[i];
         const actualLastHash = chain[i - 1].hash;
         const { lastHash, hash, data } = block;
-        if (lastHash !== actualLastHash) return "lastHash Not Valid!";
-        if (hash !== CryptohashFunction(data, lastHash))
-          return "hash is not valid in Block Chains!";
+        if (lastHash !== actualLastHash) return false;
+        if (hash !== CryptohashFunction(data, lastHash)) return false;
       }
 
-      return "blockChain Validate Completed Success fully is is not Problme!";
+      return true;
     },
+
+    isChainReplaceMent(newChain: BlockType<string>[]) {
+      if (newChain.length <= chain.length) return;
+      if (!this.isValidChain(newChain)) return;
+      chain = newChain;
+    },
+
     getChain() {
       return chain;
     },

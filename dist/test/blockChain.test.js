@@ -2,6 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const genesis_config_1 = require("../config/genesis.config");
 const script_1 = require("../script");
+const block_1 = require("../script/block");
+const CryptoHash_1 = require("../utils/CryptoHash");
+const createBlock = (lastHash, data) => {
+    const hash = (0, CryptoHash_1.CryptohashFunction)(data, lastHash);
+    return (0, block_1.block)({ lastHash, hash, data });
+};
 describe("BlockChaine", () => {
     const blocks = (0, script_1.BlockChaine)();
     blocks.addBlock({ data: `my First Data` });
@@ -31,6 +37,31 @@ describe("isValidChain", () => {
         };
         NEW_CHAIN.getChain()[0] = fakeGenesis;
         const result = NEW_CHAIN.isValidChain(NEW_CHAIN.getChain());
-        expect(result).toBe("is Not Instance fo GENESIS Block!");
+        expect(result).toBe(false);
     });
+});
+describe("isChainReplaceMent", () => {
+    it("should not replace if new chain is shorter or equal", () => {
+        const bc = (0, script_1.BlockChaine)();
+        bc.addBlock({ data: { name: "Alice" } });
+        const newChain = [genesis_config_1.GENESIS];
+        const originalChain = bc.getChain();
+        bc.isChainReplaceMent(newChain);
+        expect(bc.getChain()).toEqual(originalChain);
+    });
+    /// تست می‌کنیم که اگر زنجیره جدید معتبر نباشد،
+    // زنجیره فعلی جایگزین نشود.
+    it("should not replace if new chain is invalid", () => {
+        const bc = (0, script_1.BlockChaine)();
+        bc.addBlock({ data: { name: "Alice" } });
+        const originalChain = bc.getChain();
+        const newChain = [
+            ...originalChain,
+            { lastHash: "x", hash: "y", data: "z", timeStamp: 3445 },
+        ]; // بلاک نامعتبر
+        bc.isChainReplaceMent(newChain);
+        expect(bc.getChain()).toEqual(originalChain); // نباید جایگزین شود
+    });
+    // تست می‌کنیم که اگر زنجیره جدید معتبر و طولانی‌تر باشد،
+    // زنجیره فعلی با زنجیره جدید جایگزین شود.
 });

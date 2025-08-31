@@ -14,18 +14,25 @@ const BlockChaine = () => {
             chain = [...chain, (0, block_1.block)({ lastHash, hash, data: dataHash })];
         },
         isValidChain(chain) {
-            if (chain[0] !== genesis_config_1.GENESIS)
-                return "is Not Instance fo GENESIS Block!";
+            if (JSON.stringify(chain[0]) !== JSON.stringify(genesis_config_1.GENESIS))
+                return false;
             for (let i = 1; i < chain.length; i++) {
                 const block = chain[i];
                 const actualLastHash = chain[i - 1].hash;
                 const { lastHash, hash, data } = block;
                 if (lastHash !== actualLastHash)
-                    return "lastHash Not Valid!";
+                    return false;
                 if (hash !== (0, CryptoHash_1.CryptohashFunction)(data, lastHash))
-                    return "hash is not valid in Block Chains!";
+                    return false;
             }
-            return "blockChain Validate Completed Success fully is is not Problme!";
+            return true;
+        },
+        isChainReplaceMent(newChain) {
+            if (newChain.length <= chain.length)
+                return;
+            if (!this.isValidChain(newChain))
+                return;
+            chain = newChain;
         },
         getChain() {
             return chain;
