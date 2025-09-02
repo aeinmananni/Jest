@@ -9,10 +9,15 @@ export const BlockChaine = <T>() => {
   return {
     addBlock(v: { data: T }) {
       const lastHash = chain[chain.length - 1].hash;
+      const difficulty = chain[chain.length - 1].difficulty; // مانند فیلد هش دیفیکالتی را هم از بلاک قبل دریافت میکنیم
+      const nonce = 0;
       const dataHash: string =
         typeof v.data === "string" ? v.data : JSON.stringify(v.data);
-      const hash = CryptohashFunction(v.data, lastHash);
-      chain = [...chain, block({ lastHash, hash, data: dataHash })];
+      const hash = CryptohashFunction(v.data, lastHash, nonce, difficulty);
+      chain = [
+        ...chain,
+        block({ lastHash, hash, data: dataHash, difficulty, nonce }),
+      ];
     },
 
     isValidChain(chain: BlockType<string>[]) {
@@ -20,9 +25,14 @@ export const BlockChaine = <T>() => {
       for (let i = 1; i < chain.length; i++) {
         const block = chain[i];
         const actualLastHash = chain[i - 1].hash;
+        const actualDifficulty = chain[i - 1].difficulty;
+        const nonce = 0;
         const { lastHash, hash, data } = block;
         if (lastHash !== actualLastHash) return false;
-        if (hash !== CryptohashFunction(data, lastHash)) return false;
+        if (
+          hash !== CryptohashFunction(data, lastHash, nonce, actualDifficulty)
+        )
+          return false;
       }
 
       return true;

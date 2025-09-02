@@ -1,13 +1,6 @@
 import { GENESIS } from "../config/genesis.config";
 import { BlockType } from "../models";
 import { BlockChaine } from "../script";
-import { block } from "../script/block";
-import { CryptohashFunction } from "../utils/CryptoHash";
-
-const createBlock = (lastHash: string, data: string): BlockType<string> => {
-  const hash = CryptohashFunction(data, lastHash);
-  return block({ lastHash, hash, data });
-};
 
 describe("BlockChaine", () => {
   const blocks = BlockChaine<string>();
@@ -42,6 +35,8 @@ describe("isValidChain", () => {
     const fakeGenesis = {
       lastHash: "fakeLastHash",
       hash: "fakeHash",
+      difficulty: 3,
+      nonce: 0,
       data: "333333",
       timeStamp: 33333,
     };
@@ -70,7 +65,14 @@ describe("isChainReplaceMent", () => {
     const originalChain = bc.getChain();
     const newChain = [
       ...originalChain,
-      { lastHash: "x", hash: "y", data: "z", timeStamp: 3445 },
+      {
+        lastHash: "x",
+        hash: "y",
+        difficulty: 3,
+        nonce: 0,
+        data: "z",
+        timeStamp: 3445,
+      },
     ]; // بلاک نامعتبر
 
     bc.isChainReplaceMent(newChain);

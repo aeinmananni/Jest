@@ -2,12 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const genesis_config_1 = require("../config/genesis.config");
 const script_1 = require("../script");
-const block_1 = require("../script/block");
-const CryptoHash_1 = require("../utils/CryptoHash");
-const createBlock = (lastHash, data) => {
-    const hash = (0, CryptoHash_1.CryptohashFunction)(data, lastHash);
-    return (0, block_1.block)({ lastHash, hash, data });
-};
 describe("BlockChaine", () => {
     const blocks = (0, script_1.BlockChaine)();
     blocks.addBlock({ data: `my First Data` });
@@ -32,6 +26,8 @@ describe("isValidChain", () => {
         const fakeGenesis = {
             lastHash: "fakeLastHash",
             hash: "fakeHash",
+            difficulty: 3,
+            nonce: 0,
             data: "333333",
             timeStamp: 33333,
         };
@@ -57,7 +53,14 @@ describe("isChainReplaceMent", () => {
         const originalChain = bc.getChain();
         const newChain = [
             ...originalChain,
-            { lastHash: "x", hash: "y", data: "z", timeStamp: 3445 },
+            {
+                lastHash: "x",
+                hash: "y",
+                difficulty: 3,
+                nonce: 0,
+                data: "z",
+                timeStamp: 3445,
+            },
         ]; // بلاک نامعتبر
         bc.isChainReplaceMent(newChain);
         expect(bc.getChain()).toEqual(originalChain); // نباید جایگزین شود

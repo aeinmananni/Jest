@@ -21,8 +21,10 @@ to Equal :
 describe('BlockChain Test :', () => {
     const lastHash = 'Last_Hash';
     const hash = 'Hash';
-    const data = ['BolckChanin', 'Blokc'];
-    const data1 = (0, block_1.block)({ lastHash, hash, data });
+    const difficulty = 3;
+    const nonce = 0;
+    const data = ["BolckChanin", "Blokc"];
+    const data1 = (0, block_1.block)({ lastHash, hash, data, difficulty, nonce });
     // 1- خب حالا میخواهیم تست کنمی زمانی که بلاکی را ایجاد میکنیم خروجی برابر باشد با مقدار متغیر ها
     it('it hash timastamp,lasthash,hash,data Property', () => {
         expect(data1.lastHash).toEqual(lastHash);
