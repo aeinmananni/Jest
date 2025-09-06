@@ -1,15 +1,21 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BlockChaine = void 0;
 const genesis_config_1 = require("../../config/genesis.config");
 const CryptoHash_1 = require("../../utils/CryptoHash");
 const block_1 = require("../block");
+const hex_to_binary_1 = __importDefault(require("hex-to-binary"));
 const BlockChaine = () => {
     let chain = [genesis_config_1.GENESIS];
     return {
         addJustDifficulty(v) {
             // بلاک قبلی کم میکنیم timestamp بلاکی که جدیدا ماین از timestmape
             const { difficulty, timeStamp } = v.originalBlock;
+            if (difficulty < 1)
+                return 1; // در این حالت اگر دیفیکالتی به 1 یا 0 برسد ان را 1 در نظر میگیرد
             if (v.timestamp - timeStamp > genesis_config_1.MINE_RATE)
                 return difficulty - 1;
             return difficulty + 1;
@@ -32,7 +38,8 @@ const BlockChaine = () => {
                     timestamp,
                 });
                 hash = (0, CryptoHash_1.CryptohashFunction)(v.data, lastHash, nonce, newDifficulty);
-            } while (hash.substring(0, newDifficulty) !== "0".repeat(newDifficulty));
+            } while ((0, hex_to_binary_1.default)(hash).substring(0, newDifficulty) !==
+                "0".repeat(newDifficulty));
             chain = [
                 ...chain,
                 (0, block_1.block)({
@@ -51,8 +58,10 @@ const BlockChaine = () => {
                 const block = chain[i];
                 const actualLastHash = chain[i - 1].hash;
                 const actualDifficulty = chain[i - 1].difficulty;
-                const { lastHash, hash, data, nonce } = block;
+                const { lastHash, hash, data, nonce, difficulty } = block;
                 if (lastHash !== actualLastHash)
+                    return false;
+                if (actualDifficulty - difficulty > 1)
                     return false;
                 if (hash !== (0, CryptoHash_1.CryptohashFunction)(data, lastHash, nonce, actualDifficulty))
                     return false;

@@ -25,7 +25,13 @@ describe('BlockChain Test :', () => {
   const nonce = 0;
   const data = ["BolckChanin", "Blokc"];
 
-  const data1 = block<string[]>({ lastHash, hash, data, difficulty, nonce });
+  const data1 = block({
+    lastHash,
+    hash,
+    data: data.toString(),
+    difficulty,
+    nonce,
+  });
 
   // 1- خب حالا میخواهیم تست کنمی زمانی که بلاکی را ایجاد میکنیم خروجی برابر باشد با مقدار متغیر ها
 

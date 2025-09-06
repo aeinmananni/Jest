@@ -2,17 +2,18 @@ import { GENESIS, MINE_RATE } from "../../config/genesis.config";
 import { BlockType } from "../../models";
 import { CryptohashFunction } from "../../utils/CryptoHash";
 import { block } from "../block";
-
+import hexToBinary from "hex-to-binary";
 export const BlockChaine = <T>() => {
-  let chain: BlockType<string>[] = [GENESIS];
+  let chain: BlockType[] = [GENESIS];
 
   return {
     addJustDifficulty(v: {
-      originalBlock: Pick<BlockType<string>, "difficulty" | "timeStamp">;
+      originalBlock: Pick<BlockType, "difficulty" | "timeStamp">;
       timestamp: number;
     }) {
       // بلاک قبلی کم میکنیم timestamp بلاکی که جدیدا ماین از timestmape
       const { difficulty, timeStamp } = v.originalBlock;
+      if (difficulty < 1) return 1; // در این حالت اگر دیفیکالتی به 1 یا 0 برسد ان را 1 در نظر میگیرد
       if (v.timestamp - timeStamp > MINE_RATE) return difficulty - 1;
       return difficulty + 1;
     },
@@ -39,7 +40,10 @@ export const BlockChaine = <T>() => {
           timestamp,
         });
         hash = CryptohashFunction(v.data, lastHash, nonce, newDifficulty);
-      } while (hash.substring(0, newDifficulty) !== "0".repeat(newDifficulty));
+      } while (
+        hexToBinary(hash).substring(0, newDifficulty) !==
+        "0".repeat(newDifficulty)
+      );
 
       chain = [
         ...chain,
@@ -52,14 +56,15 @@ export const BlockChaine = <T>() => {
         }),
       ];
     },
-    isValidChain(chain: BlockType<string>[]) {
+    isValidChain(chain: BlockType[]) {
       if (JSON.stringify(chain[0]) !== JSON.stringify(GENESIS)) return false;
       for (let i = 1; i < chain.length; i++) {
         const block = chain[i];
         const actualLastHash = chain[i - 1].hash;
         const actualDifficulty = chain[i - 1].difficulty;
-        const { lastHash, hash, data, nonce } = block;
+        const { lastHash, hash, data, nonce, difficulty } = block;
         if (lastHash !== actualLastHash) return false;
+        if (actualDifficulty - difficulty > 1) return false;
         if (
           hash !== CryptohashFunction(data, lastHash, nonce, actualDifficulty)
         )
@@ -69,7 +74,7 @@ export const BlockChaine = <T>() => {
       return true;
     },
 
-    isChainReplaceMent(newChain: BlockType<string>[]) {
+    isChainReplaceMent(newChain: BlockType[]) {
       if (newChain.length <= chain.length) return;
       if (!this.isValidChain(newChain)) return;
       chain = newChain;

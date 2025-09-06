@@ -1,6 +1,6 @@
 import { BlockType } from "../../models";
 
-export const block = <T>(v: Omit<BlockType<T>, "timeStamp">): BlockType<T> => {
+export const block = (v: Omit<BlockType, "timeStamp">): BlockType => {
   return {
     ...v,
     timeStamp: Date.now(),

@@ -4,7 +4,7 @@ import { block } from "../script/block";
 const INITAIL_DIFFICULTY = 3;
 export const MINE_RATE = 1000 //برابر با هزار میلی ثانیه و در واقع میخواهیم هر بیک ثانیه یک بار یک بلاک جدید به شبکه اضافه شود
 
-export const GENESIS: BlockType<string> = block({
+export const GENESIS: BlockType = block({
   lastHash: "Gen-lastHash",
   hash: "Gen-hash",
   difficulty: INITAIL_DIFFICULTY,

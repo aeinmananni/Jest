@@ -1,8 +1,8 @@
-export type BlockType<T> = {
+export type BlockType = {
   timeStamp: number;
   lastHash: string;
   hash: string;
   difficulty: number;
   nonce: number;
-  data: T;
+  data: string;
 };
