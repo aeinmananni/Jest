@@ -9,10 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetBlocks = void 0;
+exports.addBlocks = exports.GetBlocks = void 0;
 const script_1 = require("../script");
 const blocks = (0, script_1.BlockChaine)();
 const GetBlocks = () => __awaiter(void 0, void 0, void 0, function* () {
     return blocks.getChain();
 });
 exports.GetBlocks = GetBlocks;
+const addBlocks = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    yield blocks.addBlock({ data });
+    return true;
+});
+exports.addBlocks = addBlocks;

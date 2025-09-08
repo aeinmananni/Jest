@@ -39,7 +39,7 @@ export const BlockChaine = <T>() => {
           originalBlock: { difficulty, timeStamp },
           timestamp,
         });
-        hash = CryptohashFunction(v.data, lastHash, nonce, newDifficulty);
+        hash = CryptohashFunction(dataHash, lastHash, nonce, newDifficulty);
       } while (
         hexToBinary(hash).substring(0, newDifficulty) !==
         "0".repeat(newDifficulty)
@@ -64,7 +64,8 @@ export const BlockChaine = <T>() => {
         const actualDifficulty = chain[i - 1].difficulty;
         const { lastHash, hash, data, nonce, difficulty } = block;
         if (lastHash !== actualLastHash) return false;
-        if (actualDifficulty - difficulty > 1) return false;
+        if (Math.abs(actualDifficulty - difficulty) > 1) return false;
+
         if (
           hash !== CryptohashFunction(data, lastHash, nonce, actualDifficulty)
         )

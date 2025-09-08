@@ -37,7 +37,7 @@ const BlockChaine = () => {
                     originalBlock: { difficulty, timeStamp },
                     timestamp,
                 });
-                hash = (0, CryptoHash_1.CryptohashFunction)(v.data, lastHash, nonce, newDifficulty);
+                hash = (0, CryptoHash_1.CryptohashFunction)(dataHash, lastHash, nonce, newDifficulty);
             } while ((0, hex_to_binary_1.default)(hash).substring(0, newDifficulty) !==
                 "0".repeat(newDifficulty));
             chain = [
@@ -61,7 +61,7 @@ const BlockChaine = () => {
                 const { lastHash, hash, data, nonce, difficulty } = block;
                 if (lastHash !== actualLastHash)
                     return false;
-                if (actualDifficulty - difficulty > 1)
+                if (Math.abs(actualDifficulty - difficulty) > 1)
                     return false;
                 if (hash !== (0, CryptoHash_1.CryptohashFunction)(data, lastHash, nonce, actualDifficulty))
                     return false;
