@@ -14,9 +14,13 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@types/compression": "^1.8.1",
+    "@types/cors": "^2.8.19",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^5.0.3",
     "@types/hex-to-binary": "^1.0.2",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.0.13",
+    "@types/node": "^24.3.1",
     "jest": "^30.0.4",
     "rimraf": "^6.0.1",
     "ts-jest": "^29.4.0",
@@ -24,6 +28,11 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "compression": "^1.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "dotenv-safe": "^9.1.0",
+    "express": "^5.1.0",
     "hex-to-binary": "^1.0.1"
   }
 }
