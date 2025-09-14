@@ -10,17 +10,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.addBlocks = exports.GetBlocks = void 0;
+const instance_1 = require("../instance");
 const channels_1 = require("../redisController/channels");
 const redis_1 = require("../redisController/redis");
-const script_1 = require("../script");
-const blocks = (0, script_1.BlockChaine)();
 const GetBlocks = () => __awaiter(void 0, void 0, void 0, function* () {
-    return blocks.getChain();
+    return instance_1.blockchainInstance.getChain();
 });
 exports.GetBlocks = GetBlocks;
 const addBlocks = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    redis_1.publisher.publish(channels_1.CHANNELS.BLOCK, JSON.stringify(data));
-    yield blocks.addBlock({ data });
+    yield instance_1.blockchainInstance.addBlock({ data });
+    yield redis_1.publisher.publish(channels_1.CHANNELS.BLOCK, JSON.stringify(instance_1.blockchainInstance.getChain()));
     return true;
 });
 exports.addBlocks = addBlocks;
