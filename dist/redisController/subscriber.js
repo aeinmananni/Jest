@@ -11,8 +11,8 @@ redis_1.subscriber.subscribe(channels_1.CHANNELS.BLOCK, channels_1.CHANNELS.TRAN
 });
 redis_1.subscriber.on("message", (channel, message) => {
     if (channel === channels_1.CHANNELS.BLOCK) {
-        const block = JSON.parse(message);
-        instance_1.blockchainInstance.isChainReplaceMent(block);
-        console.log("Received new block:", block);
+        const newBlock = JSON.parse(message);
+        instance_1.blockchainInstance.addBlock({ data: newBlock, fromNetwork: true });
+        console.log("Received new block:", newBlock);
     }
 });

@@ -1,5 +1,4 @@
 import { blockchainInstance } from "../instance";
-
 import { CHANNELS } from "./channels";
 import { subscriber } from "./redis";
 
@@ -10,8 +9,8 @@ subscriber.subscribe(CHANNELS.BLOCK, CHANNELS.TRANSACTION, (err, count) => {
 
 subscriber.on("message", (channel, message) => {
   if (channel === CHANNELS.BLOCK) {
-    const block = JSON.parse(message);
-    blockchainInstance.isChainReplaceMent(block);
-    console.log("Received new block:", block);
+    const newBlock = JSON.parse(message);
+    blockchainInstance.addBlock({ data: newBlock, fromNetwork: true });
+    console.log("Received new block:", newBlock);
   }
 });

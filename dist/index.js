@@ -20,12 +20,21 @@ const axios_1 = __importDefault(require("axios"));
 const instance_1 = require("./instance");
 let port = Number(process.env.PORT) || 3030;
 const rootPort = Number(process.env.PORT) || 3030;
+const peers = (process.env.PEERS || "").split(",").filter(Boolean);
 const syncChains = () => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield axios_1.default.get(`http://localhost:${rootPort}/api/blocks/GET/All`);
-    instance_1.blockchainInstance.isChainReplaceMent(response.data);
+    try {
+        for (const peer of peers) {
+            const response = yield axios_1.default.get(`${peer}/api/blocks/GET/All`);
+            console.log("Syncing from peer:", peer);
+            instance_1.blockchainInstance.isChainReplaceMent(response.data);
+        }
+    }
+    catch (error) {
+        console.error("Sync failed:", error.message);
+    }
 });
-tcp_port_used_1.default.check(Number(port), "127.0.0.1").then((inUsed) => {
-    if (inUsed) {
+tcp_port_used_1.default.check(Number(port), "127.0.0.1").then((inUse) => {
+    if (inUse) {
         port += Math.ceil(Math.random() * 1000);
     }
     app_1.default.listen(port, () => {

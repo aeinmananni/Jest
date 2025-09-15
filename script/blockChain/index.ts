@@ -3,6 +3,7 @@ import { BlockType } from "../../models";
 import { CryptohashFunction } from "../../utils/CryptoHash";
 import { block } from "../block";
 import hexToBinary from "hex-to-binary";
+
 export const BlockChaine = <T>() => {
   let chain: BlockType[] = [GENESIS];
 
@@ -11,14 +12,35 @@ export const BlockChaine = <T>() => {
       originalBlock: Pick<BlockType, "difficulty" | "timeStamp">;
       timestamp: number;
     }) {
-      // بلاک قبلی کم میکنیم timestamp بلاکی که جدیدا ماین از timestmape
       const { difficulty, timeStamp } = v.originalBlock;
-      if (difficulty < 1) return 1; // در این حالت اگر دیفیکالتی به 1 یا 0 برسد ان را 1 در نظر میگیرد
+      if (difficulty < 1) return 1;
       if (v.timestamp - timeStamp > MINE_RATE) return difficulty - 1;
       return difficulty + 1;
     },
 
-    addBlock(v: { data: T }) {
+    addBlock(v: { data: T | null; fromNetwork?: boolean }): BlockType {
+      if (
+        v.fromNetwork &&
+        v.data &&
+        typeof v.data === "object" &&
+        "hash" in v.data
+      ) {
+        const incomingBlock = v.data as unknown as BlockType;
+
+        // اگر بلاک قبلاً وجود داشته، اضافه نکن
+        if (chain.find((b) => b.hash === incomingBlock.hash)) {
+          return incomingBlock;
+        }
+
+        chain = [...chain, incomingBlock];
+        return incomingBlock;
+      }
+
+      if (v.data == null) {
+        throw new Error("Cannot add null block data");
+      }
+
+      // بلاک جدید ماین شده
       const lastBlock = chain[chain.length - 1];
       const lastHash = lastBlock.hash;
       const difficulty = lastBlock.difficulty;
@@ -45,16 +67,16 @@ export const BlockChaine = <T>() => {
         "0".repeat(newDifficulty)
       );
 
-      chain = [
-        ...chain,
-        block({
-          lastHash,
-          hash,
-          data: dataHash,
-          difficulty: newDifficulty,
-          nonce,
-        }),
-      ];
+      const newBlock = block({
+        lastHash,
+        hash,
+        data: dataHash,
+        difficulty: newDifficulty,
+        nonce,
+      });
+
+      chain = [...chain, newBlock];
+      return newBlock;
     },
     isValidChain(chain: BlockType[]) {
       if (JSON.stringify(chain[0]) !== JSON.stringify(GENESIS)) return false;
@@ -63,6 +85,7 @@ export const BlockChaine = <T>() => {
         const actualLastHash = chain[i - 1].hash;
         const actualDifficulty = chain[i - 1].difficulty;
         const { lastHash, hash, data, nonce, difficulty } = block;
+
         if (lastHash !== actualLastHash) return false;
         if (Math.abs(actualDifficulty - difficulty) > 1) return false;
 
@@ -71,13 +94,13 @@ export const BlockChaine = <T>() => {
         )
           return false;
       }
-
       return true;
     },
 
     isChainReplaceMent(newChain: BlockType[]) {
       if (newChain.length <= chain.length) return;
       if (!this.isValidChain(newChain)) return;
+      console.log("Replacing chain with length:", newChain.length);
       chain = newChain;
     },
 

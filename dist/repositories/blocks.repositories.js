@@ -18,8 +18,8 @@ const GetBlocks = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.GetBlocks = GetBlocks;
 const addBlocks = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    yield instance_1.blockchainInstance.addBlock({ data });
-    yield redis_1.publisher.publish(channels_1.CHANNELS.BLOCK, JSON.stringify(instance_1.blockchainInstance.getChain()));
+    const newBlock = instance_1.blockchainInstance.addBlock({ data });
+    yield redis_1.publisher.publish(channels_1.CHANNELS.BLOCK, JSON.stringify(newBlock));
     return true;
 });
 exports.addBlocks = addBlocks;

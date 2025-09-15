@@ -12,15 +12,30 @@ const BlockChaine = () => {
     let chain = [genesis_config_1.GENESIS];
     return {
         addJustDifficulty(v) {
-            // بلاک قبلی کم میکنیم timestamp بلاکی که جدیدا ماین از timestmape
             const { difficulty, timeStamp } = v.originalBlock;
             if (difficulty < 1)
-                return 1; // در این حالت اگر دیفیکالتی به 1 یا 0 برسد ان را 1 در نظر میگیرد
+                return 1;
             if (v.timestamp - timeStamp > genesis_config_1.MINE_RATE)
                 return difficulty - 1;
             return difficulty + 1;
         },
         addBlock(v) {
+            if (v.fromNetwork &&
+                v.data &&
+                typeof v.data === "object" &&
+                "hash" in v.data) {
+                const incomingBlock = v.data;
+                // اگر بلاک قبلاً وجود داشته، اضافه نکن
+                if (chain.find((b) => b.hash === incomingBlock.hash)) {
+                    return incomingBlock;
+                }
+                chain = [...chain, incomingBlock];
+                return incomingBlock;
+            }
+            if (v.data == null) {
+                throw new Error("Cannot add null block data");
+            }
+            // بلاک جدید ماین شده
             const lastBlock = chain[chain.length - 1];
             const lastHash = lastBlock.hash;
             const difficulty = lastBlock.difficulty;
@@ -40,16 +55,15 @@ const BlockChaine = () => {
                 hash = (0, CryptoHash_1.CryptohashFunction)(dataHash, lastHash, nonce, newDifficulty);
             } while ((0, hex_to_binary_1.default)(hash).substring(0, newDifficulty) !==
                 "0".repeat(newDifficulty));
-            chain = [
-                ...chain,
-                (0, block_1.block)({
-                    lastHash,
-                    hash,
-                    data: dataHash,
-                    difficulty: newDifficulty,
-                    nonce,
-                }),
-            ];
+            const newBlock = (0, block_1.block)({
+                lastHash,
+                hash,
+                data: dataHash,
+                difficulty: newDifficulty,
+                nonce,
+            });
+            chain = [...chain, newBlock];
+            return newBlock;
         },
         isValidChain(chain) {
             if (JSON.stringify(chain[0]) !== JSON.stringify(genesis_config_1.GENESIS))
@@ -73,6 +87,7 @@ const BlockChaine = () => {
                 return;
             if (!this.isValidChain(newChain))
                 return;
+            console.log("Replacing chain with length:", newChain.length);
             chain = newChain;
         },
         getChain() {
