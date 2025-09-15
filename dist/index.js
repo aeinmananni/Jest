@@ -25,7 +25,6 @@ const syncChains = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         for (const peer of peers) {
             const response = yield axios_1.default.get(`${peer}/api/blocks/GET/All`);
-            console.log("Syncing from peer:", peer);
             instance_1.blockchainInstance.isChainReplaceMent(response.data);
         }
     }

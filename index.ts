@@ -13,7 +13,6 @@ const syncChains = async () => {
   try {
     for (const peer of peers) {
       const response = await axios.get(`${peer}/api/blocks/GET/All`);
-      console.log("Syncing from peer:", peer);
       blockchainInstance.isChainReplaceMent(response.data);
     }
   } catch (error: any) {
