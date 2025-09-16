@@ -7,14 +7,13 @@ import { blockchainInstance } from "./instance";
 
 let port: number = Number(process.env.PORT) || 3030;
 const rootPort: number = Number(process.env.PORT) || 3030;
-const peers = (process.env.PEERS || "").split(",").filter(Boolean);
+const peers = process.env.PEERS || "";
 
 const syncChains = async () => {
+  console.log(peers);
   try {
-    for (const peer of peers) {
-      const response = await axios.get(`${peer}/api/blocks/GET/All`);
-      blockchainInstance.isChainReplaceMent(response.data);
-    }
+    const response = await axios.get(`${peers}/api/blocks/GET/All`);
+    blockchainInstance.isChainReplaceMent(response.data);
   } catch (error: any) {
     console.error("Sync failed:", error.message);
   }
