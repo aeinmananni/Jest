@@ -22,7 +22,6 @@ let port = Number(process.env.PORT) || 3030;
 const rootPort = Number(process.env.PORT) || 3030;
 const peers = process.env.PEERS || "";
 const syncChains = () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(peers);
     try {
         const response = yield axios_1.default.get(`${peers}/api/blocks/GET/All`);
         instance_1.blockchainInstance.isChainReplaceMent(response.data);

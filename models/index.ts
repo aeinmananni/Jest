@@ -6,3 +6,5 @@ export type BlockType = {
   nonce: number;
   data: string;
 };
+
+

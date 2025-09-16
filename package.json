@@ -10,6 +10,9 @@
     "test": "jest"
   },
   "keywords": [],
+  "jest": {
+    "testEnvironment": "node"
+  },
   "author": "",
   "license": "ISC",
   "type": "commonjs",
@@ -17,12 +20,15 @@
     "@types/compression": "^1.8.1",
     "@types/cors": "^2.8.19",
     "@types/dotenv": "^6.1.1",
+    "@types/elliptic": "^6.4.18",
     "@types/express": "^5.0.3",
     "@types/hex-to-binary": "^1.0.2",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.3.1",
     "@types/tcp-port-used": "^1.0.4",
+    "i": "^0.3.7",
     "jest": "^30.0.4",
+    "npm": "^11.6.0",
     "rimraf": "^6.0.1",
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
@@ -34,6 +40,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "dotenv-safe": "^9.1.0",
+    "elliptic": "^6.6.1",
     "express": "^5.1.0",
     "hex-to-binary": "^1.0.1",
     "ioredis": "^5.7.0",
