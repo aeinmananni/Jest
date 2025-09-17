@@ -5,13 +5,13 @@ describe("Wallet Test : ", () => {
   const Wallet_Example = Wallet();
   const data = { amount: 100, to: "0x123" };
 
-  const sinature = Wallet_Example.sign(data).toDER("hex");
+  const signature = Wallet_Example.sign(data).toDER("hex");
   it("Return True and Valid Signature", () => {
     expect(
       VeryfySignature({
         publicKey: Wallet_Example.publicKey,
         data,
-        signature: sinature,
+        signature,
       })
     ).toBe(true);
   });
@@ -21,7 +21,7 @@ describe("Wallet Test : ", () => {
       VeryfySignature({
         publicKey: Wallet_Example.publicKey,
         data: { amount: 999, to: "0x123" },
-        signature: sinature,
+        signature,
       })
     ).toBe(false);
   });
