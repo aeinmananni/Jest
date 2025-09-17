@@ -23,11 +23,11 @@ describe('BlockChain Test :', () => {
     const hash = 'Hash';
     const difficulty = 3;
     const nonce = 0;
-    const data = ["BolckChanin", "Blokc"];
+    const data = "jjjjjj";
     const data1 = (0, block_1.block)({
         lastHash,
         hash,
-        data: data.toString(),
+        data: data,
         difficulty,
         nonce,
     });

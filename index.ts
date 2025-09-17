@@ -8,6 +8,9 @@ let port: number = Number(process.env.PORT) || 3030;
 const rootPort: number = Number(process.env.PORT) || 3030;
 const peers = process.env.PEERS || "";
 
+
+
+
 const syncChains = async () => {
   try {
     const response = await axios.get(`${peers}/api/blocks/GET/All`);

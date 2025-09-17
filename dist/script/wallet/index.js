@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Wallet = void 0;
 const genesis_config_1 = require("../../config/genesis.config");
 const elliptic_1 = require("../../utils/elliptic");
+const CryptoHash_1 = require("../../utils/CryptoHash");
 /**
  *   public key به جای ادرس بهش میگیم
  *   چون براساس یک جفت کلید رمزنگاری عمومی و خصوصی
@@ -15,12 +16,24 @@ const elliptic_1 = require("../../utils/elliptic");
  *              خب 2 تا متد بهمون میده یکی برای کلید عمومی
  *              و دیگری برای کلید خصوصی
  *              getPublic , getPrivate
+ *
+ *  sign :
+ *        خب ما برای ساین کردن نیاز به کلید خصوصی داریم
+ *        قرار دارد KEY_PAIR  و این کلید خصوصی که درون
+ *
  */
-const KEY_PAIR = elliptic_1.ECModel.genKeyPair();
 const Wallet = () => {
     var _a;
-    const balence = genesis_config_1.STARTING_BALANCE;
+    const KEY_PAIR = elliptic_1.ECModel.genKeyPair();
+    const balance = genesis_config_1.STARTING_BALANCE;
     const publicKey = (_a = KEY_PAIR["getPublic"]()) === null || _a === void 0 ? void 0 : _a.encode("hex", false);
-    return { balence, publicKey };
+    return {
+        balance,
+        publicKey,
+        sign(data) {
+            const dataHash = (0, CryptoHash_1.CryptohashFunction)(data);
+            return KEY_PAIR.sign(dataHash);
+        },
+    };
 };
 exports.Wallet = Wallet;

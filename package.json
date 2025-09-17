@@ -7,12 +7,9 @@
     "clean": "rimraf dist",
     "dev": "npm run clean && tsc --watch",
     "serve": "nodemon dist/index.js",
-    "test": "jest"
+    "test": "jest --config jest.config.ts"
   },
   "keywords": [],
-  "jest": {
-    "testEnvironment": "node"
-  },
   "author": "",
   "license": "ISC",
   "type": "commonjs",
