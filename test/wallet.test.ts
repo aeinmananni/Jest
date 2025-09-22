@@ -26,3 +26,34 @@ describe("Wallet Test : ", () => {
     ).toBe(false);
   });
 });
+
+
+
+
+describe("Wallet createTransaction", () => {
+  let wallet: ReturnType<typeof Wallet>;
+
+  beforeEach(() => {
+    wallet = Wallet();
+  });
+
+  it("should throw an error if amount exceeds balance", () => {
+    const recipient = "fake-recipient";
+    const amount = wallet.balance + 1; // بیشتر از موجودی
+
+    expect(() => {
+      wallet.createTransaction({ recipient, amount });
+    }).toThrow("amount exceeds balance");
+  });
+
+  it("should create a transaction if amount is valid", () => {
+    const recipient = "fake-recipient";
+    const amount = 50;
+
+    const tx = wallet.createTransaction({ recipient, amount });
+
+    expect(tx).toBeDefined();
+    expect(tx.id).toBeDefined();
+    expect(tx.createOutputMap()).toHaveProperty(recipient, amount);
+  });
+});

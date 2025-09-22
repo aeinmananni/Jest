@@ -1,7 +1,7 @@
 import { STARTING_BALANCE } from "../../config/genesis.config";
 import { ECModel } from "../../utils/elliptic";
 import { CryptohashFunction } from "../../utils/CryptoHash";
-
+import { transaction as Transaction } from "../transaction";
 /**
  *   public key به جای ادرس بهش میگیم
  *   چون براساس یک جفت کلید رمزنگاری عمومی و خصوصی
@@ -33,6 +33,13 @@ export const Wallet = () => {
     sign<T>(data: T) {
       const dataHash = CryptohashFunction(data);
       return KEY_PAIR.sign(dataHash);
+    },
+
+    createTransaction(v: { recipient: string; amount: number }) {
+      if (v.amount > this.balance) {
+        throw new Error("amount exceeds balance");
+      }
+      return Transaction(this, v.recipient, v.amount);
     },
   };
 };

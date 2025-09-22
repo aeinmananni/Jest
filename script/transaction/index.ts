@@ -66,5 +66,25 @@ export const transaction = (
 
       return true;
     },
+
+    update(v: { recipient: string; amount: number }) {
+      const outputMap = this.createOutputMap();
+      if (v.amount > outputMap[wallet.publicKey]) {
+        throw new Error("amount exceeds balance");
+      }
+      if (outputMap[v.recipient]) {
+        outputMap[v.recipient] += v.amount;
+      } else {
+        outputMap[v.recipient] = v.amount;
+      }
+      outputMap[wallet.publicKey] -= v.amount;
+      const newInput = this.createInputMap(outputMap);
+
+      return {
+        ...this,
+        createOutputMap: () => outputMap,
+        createInputMap: () => newInput,
+      };
+    },
   };
 };
